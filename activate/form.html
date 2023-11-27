@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/style.css" rel="stylesheet" type="text/css" />
+    <title>Enviar credenciales</title>
+</head>
+
+<body>
+    <div>
+        <form id="credenciales-form">
+            <label for="usuario">Usuario:</label>
+            <input type="text" id="usuario" required>
+
+            <label for="correo">Correo:</label>
+            <input type="email" id="correo" required>
+
+            <label for="contrasena">Contraseña:</label>
+            <input type="password" id="contrasena" required>
+
+            <button type="button" class="btn-secondary" onclick="enviarCredenciales()">Enviar Credenciales</button>
+            <a href="/activate/update.html" onclick="mostrarFormulario('actualizar-form')">Actualizar Credenciales</a>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js"></script>
+
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBAhh3ZZRQvoafPAMbuXw01CQ83It-VHKQ",
+            authDomain: "login-con-firebase-d93ad.firebaseapp.com",
+            projectId: "login-con-firebase-d93ad",
+            storageBucket: "login-con-firebase-d93ad.appspot.com",
+            messagingSenderId: "662223730171",
+            appId: "1:662223730171:web:992dda6ce377253107c75e"
+        };
+
+        // Inicializa Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Obtiene la referencia a Firestore
+        const db = firebase.firestore();
+        const { addDoc, collection } = firebase.firestore; // Importa addDoc y collection
+    </script>
+
+    <script>
+        function enviarCredenciales() {
+            // Obtén los valores del formulario
+            const usuario = document.getElementById('usuario').value;
+            const correo = document.getElementById('correo').value;
+            const contrasena = document.getElementById('contrasena').value;
+
+            // Envía las credenciales a Firestore
+            addDoc(collection(db, 'credenciales'), {
+                usuario: usuario,
+                correo: correo,
+                contrasena: contrasena,
+            })
+                .then(function (docRef) {
+                    console.log('Credenciales enviadas con ID: ', docRef.id);
+                })
+                .catch(function (error) {
+                    console.error('Error al enviar credenciales: ', error);
+                });
+        }
+    </script>
+</body>
+
+</html>

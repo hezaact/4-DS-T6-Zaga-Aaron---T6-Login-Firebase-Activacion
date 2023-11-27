@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/style.css" rel="stylesheet" type="text/css" />
+    <title>Actualizar Credenciales</title>
+</head>
+
+<body>
+    <div>
+        <form id="actualizar-form">
+            <h1>Actualizar Credenciales</h1>
+            <label for="documentoId">ID del Documento:</label>
+            <input type="text" id="documentoId" required>
+
+            <label for="nuevoUsuario">Nuevo Usuario:</label>
+            <input type="text" id="nuevoUsuario" required>
+
+            <label for="nuevoCorreo">Nuevo Correo:</label>
+            <input type="email" id="nuevoCorreo" required>
+
+            <label for="nuevaContrasena">Nueva Contraseña:</label>
+            <input type="password" id="nuevaContrasena" required>
+
+            <button type="button" class="btn-secondary" onclick="actualizarCredenciales()">Actualizar
+                Credenciales</button>
+            <a href="/activate/form.html" onclick="mostrarFormulario('credenciales-form')">Volver a Enviar
+                Credenciales</a>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.2/firebase-app.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBAhh3ZZRQvoafPAMbuXw01CQ83It-VHKQ",
+            authDomain: "login-con-firebase-d93ad.firebaseapp.com",
+            projectId: "login-con-firebase-d93ad",
+            storageBucket: "login-con-firebase-d93ad.appspot.com",
+            messagingSenderId: "662223730171",
+            appId: "1:662223730171:web:992dda6ce377253107c75e"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const { addDoc, collection, getDocs, doc, updateDoc } = firebase.firestore;
+
+        function enviarCredenciales() {
+            const usuario = document.getElementById('usuario').value;
+            const correo = document.getElementById('correo').value;
+            const contrasena = document.getElementById('contrasena').value;
+
+            addDoc(collection(db, 'credenciales'), {
+                usuario: usuario,
+                correo: correo,
+                contrasena: contrasena,
+            })
+                .then(function (docRef) {
+                    console.log('Credenciales enviadas con ID: ', docRef.id);
+                })
+                .catch(function (error) {
+                    console.error('Error al enviar credenciales: ', error);
+                });
+        }
+
+        function actualizarCredenciales() {
+            const documentoId = document.getElementById('documentoId').value;
+            const nuevoUsuario = document.getElementById('nuevoUsuario').value;
+            const nuevoCorreo = document.getElementById('nuevoCorreo').value;
+            const nuevaContrasena = document.getElementById('nuevaContrasena').value;
+
+            // Actualiza las credenciales en Firestore
+            const docRef = doc(db, 'credenciales', documentoId);
+            updateDoc(docRef, {
+                usuario: nuevoUsuario,
+                correo: nuevoCorreo,
+                contrasena: nuevaContrasena,
+            })
+                .then(() => {
+                    console.log('Credenciales actualizadas con éxito');
+                })
+                .catch((error) => {
+                    console.error('Error al actualizar credenciales: ', error);
+                });
+        }
+    </script>
+
+    <script>
+        function mostrarFormulario(formulario) {
+            const formEnviar = document.getElementById('credenciales-form');
+            const formActualizar = document.getElementById('actualizar-form');
+
+            if (formulario === 'credenciales-form') {
+                formEnviar.style.display = 'block';
+                formActualizar.style.display = 'none';
+            } else if (formulario === 'actualizar-form') {
+                formEnviar.style.display = 'none';
+                formActualizar.style.display = 'block';
+            }
+        }
+    </script>
+
+</body>
+
+</html>
